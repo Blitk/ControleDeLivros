@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "funcoes.h"
 
 void testa()
 {
@@ -79,90 +80,87 @@ void modificar()
 
 }
 
-char* buscar(int codigo=0)
+char* buscar()
 {
-	int resp = codigo;
-	if(resp == 0)
+	int resp;
+	printf("\n\n||====================================||");
+	printf("\n  O que deseja buscar?");
+	printf("\n  0 - Codigo\n  1 - Nome\n  2 - Autor\n  3 - Lido?\n  4 - Genero");
+	printf("\n||====================================||");
+	printf("\n: ");
+	scanf("%d", &resp);
+	FILE* arq = fopen("dados.csv", 'r');
+	char buffer[1000];
+	int linha = 0;
+	char retorno[4][100]
+	while(fgets(buffer,1000, arq))
 	{
-		printf("\n\n||====================================||");
-		printf("\n  O que deseja buscar?");
-		printf("\n  0 - Codigo\n  1 - Nome\n  2 - Autor\n  3 - Lido?\n  4 - Genero");
-		printf("\n||====================================||");
-		printf("\n: ");
-		scanf("%d", &resp);
-		FILE* arq = fopen("dados.csv", 'r');
-		char buffer[1000];
-		int linha = 0;
-		char retorno[4][100]
-		while(fgets(buffer,1000, arq))
+		if(linha = 0)
 		{
-			if(linha = 0)
-			{
-				linha++;
-				continue;
-			}
-			char *conteudo = strtok(buffer, ", ");
-			if(conteudo[resp] == (char)resp)
-			{
-				printf("\n\n||====================================||");
-				printf("\n  Codigo: %s\n  Nome: %s\n  Autor: %s\n  Lido?: ",conteudo[0], conteudo[1], conteudo[2]);
-				if((int)conteudo[3] == 0)
-				{
-					printf("Não\n");
-				}
-				if((int)conteudo[3] == 1)
-				{
-					printf("Sim\n");
-				}else
-				{
-					printf("?\n");
-				}
-				printf("  Gênero: ");
-
-				switch((int)conteudo[4])
-				{
-					case 1:
-						printf("Ação\n");
-						break;
-					case 2:
-						printf("Comédia\n");
-						break;
-					case 3:
-						printf("Drama\n");
-						break;
-					case 4:
-						printf("Ficção\n");
-						break;
-					case 5:
-						printf("Filosofia\n");
-						break;
-					case 6:
-						printf("História\n");
-						break;
-					case 7:
-						printf("Religião\n");
-						break;
-					case 8:
-						printf("Romance\n");
-						break;
-					case 9:
-						printf("Técnico\n");
-						break;
-					default:
-						printf("Outros\n");
-						break;
-				}
-				printf("||====================================||\n\n")
-				for(int c = 0; c <= 4; c++)
-				{
-					retorno[c] = conteudo[c];
-				}
-				break;
-			}
+			linha++;
+			continue;
 		}
-		fclose(arq);
-		return retorno;
+		char *conteudo = strtok(buffer, ", ");
+		if(conteudo[resp] == (char)resp)
+		{
+			printf("\n\n||====================================||");
+			printf("\n  Codigo: %s\n  Nome: %s\n  Autor: %s\n  Lido?: ",conteudo[0], conteudo[1], conteudo[2]);
+			if((int)conteudo[3] == 0)
+			{
+				printf("Não\n");
+			}
+			if((int)conteudo[3] == 1)
+			{
+				printf("Sim\n");
+			}else
+			{
+				printf("?\n");
+			}
+			printf("  Gênero: ");
+
+			switch((int)conteudo[4])
+			{
+				case 1:
+					printf("Ação\n");
+					break;
+				case 2:
+					printf("Comédia\n");
+					break;
+				case 3:
+					printf("Drama\n");
+					break;
+				case 4:
+					printf("Ficção\n");
+					break;
+				case 5:
+					printf("Filosofia\n");
+					break;
+				case 6:
+					printf("História\n");
+					break;
+				case 7:
+					printf("Religião\n");
+					break;
+				case 8:
+					printf("Romance\n");
+					break;
+				case 9:
+					printf("Técnico\n");
+					break;
+				default:
+					printf("Outros\n");
+					break;
+			}
+			printf("||====================================||\n\n")
+			for(int c = 0; c <= 4; c++)
+			{
+				retorno[c] = conteudo[c];
+			}
+			break;
+		}
 	}
+	fclose(arq);
+	return retorno;
 	FILE* arq = fopen("dados.csv", 'r');
 	char buffer[1000];
 	int linha = 0;
@@ -255,12 +253,15 @@ int buscarNumeroDeLivros()
 }
 
 
-void modificarFile(int codigo, int indice, int valorInt=20, char* valor)
+void modificarFile(int codigo, int indice, int valorInt, char* valor)
 {
 	FILE* arq = fopen("dados.csv", 'r');
 	char buffer[1000];
 	int linha = 0;
 	char retorno[100][4]
+
+	LinhaConteudo dados[100];
+
 	while(fgets(buffer,1000, arq)){
 		if(linha = 0){
 			linha++;
@@ -271,13 +272,141 @@ void modificarFile(int codigo, int indice, int valorInt=20, char* valor)
 		{
 			if( valorInt == 20)
 			{
-				strcpy(conteudo[indice], valor);
+				if(indice == 1)
+				{
+					strcpy(dados[linha].nome, valor);
+				}
+				if(indice == 2)
+				{
+					strcpy(dados[linha].autor, valor);
+				}
+				dados[linha].codigo = (int)conteudo[0];
+				dados[linha].leu = (int)conteudo[3];
+				dados[linha].genero = (int)conteudo[4];
+				linha++;
 			}
 			if(valor == "")
 			{
-				conteudo[indice] = (char)valorInt;
+				dados[linha].codigo = (int)conteudo[0];
+				strcpy(dados[linha].nome, conteudo[1]);
+				strcpy(dados[linha].autor, conteudo[2]);
+				if(indice == 3)
+				{
+					dados[linha].leu = (int)conteudo[3];
+				}
+				if(indice == 4)
+				{
+					dados[linha].genero = (int)conteudo[4];
+				}
+				
+				linha++;
 			}
 		}
-			
+		else
+		{
+			dados[linha].codigo = (int)conteudo[0];
+			strcpy(dados[linha].nome, conteudo[1]);
+			strcpy(dados[linha].autor, conteudo[2]);
+			dados[linha].leu = (int)conteudo[3];
+			dados[linha].genero = (int)conteudo[4];
+			linha++;
+		}	
 	}
+	fclose(arq);
+	FILE* arq = fopen("dados.csv", "w");
+	for(int c = 0 ; c < linha ; c++)
+	{
+		if(c == 0)
+		{
+			fprintf(arqn, "Codigo, nome, autor, lido, genero");
+		}
+		else
+		{
+			fprintf(arq, "%d, %s, %s, %d, %d",dados[c].codigo, dados[c].nome, dados[c].autor, dados[c].leu, dados[c].genero);
+		}
+	}
+	fclose(arq);
+		
 }
+
+void mostrarTodos()
+{
+	FILE* arq = fopen("dados.csv", 'r');
+	char buffer[1000];
+	int linha = 0;
+	while(fgets(buffer,1000, arq))
+	{
+		if(linha = 0)
+		{
+			linha++;
+			continue;
+		}
+		char *conteudo = strtok(buffer, ", ");
+		printf("\n\n||====================================||");
+		printf("\n  Codigo: %s\n  Nome: %s\n  Autor: %s\n  Lido?: ",conteudo[0], conteudo[1], conteudo[2]);
+		if((int)conteudo[3] == 0)
+		{
+			printf("Não\n");
+		}
+		if((int)conteudo[3] == 1)
+		{
+			printf("Sim\n");
+		}else
+		{
+			printf("?\n");
+		}
+		printf("  Gênero: ");
+
+		switch((int)conteudo[4])
+		{
+			case 1:
+				printf("Ação\n");
+				break;
+			case 2:
+				printf("Comédia\n");
+				break;
+			case 3:
+				printf("Drama\n");
+				break;
+			case 4:
+				printf("Ficção\n");
+				break;
+			case 5:
+				printf("Filosofia\n");
+				break;
+			case 6:
+				printf("História\n");
+				break;
+			case 7:
+				printf("Religião\n");
+				break;
+			case 8:
+				printf("Romance\n");
+				break;
+			case 9:
+				printf("Técnico\n");
+				break;
+			default:
+				printf("Outros\n");
+				break;
+		}
+		printf("||====================================||\n\n")
+		for(int c = 0; c <= 4; c++)
+		{
+			retorno[c] = conteudo[c];
+		}
+		break;
+	}
+	fclose(arq);
+	return retorno;
+}
+
+
+typedef struct Linha
+{
+	int codigo;
+	char *nome;
+	char *autor;
+	int lido;
+	int genero;
+}LinhaConteudo;
